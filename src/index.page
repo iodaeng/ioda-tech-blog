@@ -1,0 +1,10 @@
+--- name:content pipeline:jade
+
+- import fm.ioda.blog.Util._
+- for(post <- posts.take(10))
+  .post
+    a(href={post.link})
+      h2= post.title
+    h6 Posted by #{post.author} on #{post.createdAt}
+    !~~ post.render()
+  hr
