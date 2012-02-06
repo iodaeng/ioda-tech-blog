@@ -7,4 +7,6 @@
       h2= post.title
     h6 Posted by #{post.author} on #{post.createdAt}
     !~~ post.render()
+    a(href={post.link + "#disqus_thread"})
+      Comments
   hr

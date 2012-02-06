@@ -6,9 +6,7 @@ author: Ramesh Sen
 
 Static blog generators such as [Jekyll](http://jekyllrb.com/) are rapidly increasing in popularity of late, and with good reason. Scaling is trivial (any CDN will do), security concerns are negligible relative to dynamic blogging platforms like Wordpress, developers can use the tools they're accustomed to for editing and source control, and combined with a javascript-based commenting system like Disqus the user experience is identical to traditional blogging systems. Most of the popular options are written in python or ruby, and even though the backend language is basically irrelevant for a static site generator, I wanted to find a scala-based solution out of curiosity. Thankfully, [Scalate](http://scalate.fusesource.org) (a templating system for Scala) includes a static site generator that proved easily adaptable for this use.
 
-First of all, install Scalate using the instructions [on their site](http://scalate.fusesource.org/documentation/installing.html), then create an empty site [with the sitegen tool](http://scalate.fusesource.org/documentation/siteGen.html). While this gives you a shell site that be rendered statically via `mvn install`, it's missing some features that are useful for a blog such as a way to group posts by month as you see in the right-hand nav (there is a BlogHelper class included with Scalate, but it's quite minimal). You can put Scala files in `ext/` that will be available for import in your templates; I made one called Util.scala to hold various helper functions:
-
-    Gist to go here
+First of all, install Scalate using the instructions [on their site](http://scalate.fusesource.org/documentation/installing.html), then create an empty site [with the sitegen tool](http://scalate.fusesource.org/documentation/siteGen.html). While this gives you a shell site that be rendered statically via `mvn install`, it's missing some features that are useful for a blog such as a way to group posts by month as you see in the right-hand nav (there is a BlogHelper class included with Scalate, but it's quite minimal). You can put Scala files in `ext/` that will be available for import in your templates; I made one called [Util.scala](https://github.com/iodaeng/ioda-tech-blog/blob/master/ext/Util.scala) to hold various helper functions.
 
 A few general points:
 
@@ -21,6 +19,7 @@ A few general points:
         
         --- name:content pipeline:markdown
 
+  You can also add a `created_at` header if you need to adjust the date, and you can use different pipelines (Scaml, Jade, SSP) for the template.
 * You can create a `src/index.rss.feed` that looks like
 
         ---
@@ -36,32 +35,6 @@ A few general points:
   to setup an RSS feed.
 * While working on a post or editing templates, you can use `mvn jetty:run` to render the site dynamically on http://localhost:8080. 
 
-To be able to deploy the generated site via `mvn scalate:deploy` I had to make several changes to the `pom.xml` (NOTE: this needs to change to reflect Github deployment):
-
-* If you want to deploy using DAV, add jackrabbit as a build extension by placing
-
-        <extensions>
-          <extension>
-            <groupId>org.apache.maven.wagon</groupId>
-            <artifactId>wagon-webdav-jackrabbit</artifactId>
-            <version>1.0</version>
-          </extension>
-        </extensions>
-
-  under `<build>`
-
-* Add a `<configuration>` section with `<remoteServerId>` and `<remoteServerUrl>` to the `<plugin>` section for `maven-scalate-plugin`
-
-* Add a distributionManagement section at the top level:
-
-        <distributionManagement>
-          <site>
-            <id>remoteServerId</id>
-            <name>Site Name</name>
-            <url>remoteServerUrl</url>
-          </site>
-        </distributionManagement>
-
-TODO: add Disqus
+Even though Maven supports deploying to a git repository, I haven't been able to make it work with Scalate's customized deployment task. Fortunately, this is reasonably easy to work around with a few shell scripts. [generate.sh](https://github.com/iodaeng/ioda-tech-blog/blob/master/generate.sh) clones the target repository (typically this will be called *username*.github.com) into `target/sitegen` and builds the site, while [publish.sh](https://github.com/iodaeng/ioda-tech-blog/blob/master/publish.sh) does the add/commit/push. 
 
 That's about it as far as Scalate-specific configuration goes. You'll obviously want to add your own CSS and do any other customizations you want, but these instructions will give you a basic working statically-generated blog site.
