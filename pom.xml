@@ -38,9 +38,8 @@
 
   <distributionManagement>
     <site>
-      <id>devisilon</id>
-      <name>Deploy Test</name>
-      <url>dav:http://devisilon/blog/</url>
+      <id>iodaeng.github.com</id>
+      <url>scm:git:git://git@github.com/iodaeng/iodaeng.github.com.git</url>
     </site>
   </distributionManagement>
 
@@ -82,6 +81,38 @@
       <artifactId>slf4j-nop</artifactId>
       <version>1.6.1</version>
     </dependency>    
+    <dependency>
+      <groupId>org.apache.maven.wagon</groupId>
+      <artifactId>wagon-scm</artifactId>
+      <version>2.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.scm</groupId>
+      <artifactId>maven-scm-api</artifactId>
+      <version>1.6</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.scm</groupId>
+      <artifactId>maven-scm-manager-plexus</artifactId>
+      <version>1.6</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.scm</groupId>
+      <artifactId>maven-scm-test</artifactId>
+      <version>1.6</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.scm</groupId>
+      <artifactId>maven-scm-provider-gitexe</artifactId>
+      <version>1.6</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.scm</groupId>
+      <artifactId>maven-scm-provider-git-commons</artifactId>
+      <version>1.6</version>
+    </dependency>
   </dependencies>
 
   <repositories>
@@ -180,16 +211,54 @@
 
   <build>
     <extensions>
-        <extension>
-            <groupId>org.apache.maven.wagon</groupId>
-            <artifactId>wagon-webdav-jackrabbit</artifactId>
-            <version>1.0</version>
-        </extension>
+      <extension>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-webdav-jackrabbit</artifactId>
+        <version>1.0</version>
+      </extension>
+      <extension>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-ssh</artifactId>
+        <version>1.0</version>
+      </extension>
+      <extension>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-scm</artifactId>
+        <version>2.2</version>
+      </extension>
+      <extension>
+        <groupId>org.apache.maven.scm</groupId>
+        <artifactId>maven-scm-manager-plexus</artifactId>
+        <version>1.6</version>
+      </extension>
+      <extension>
+        <groupId>org.apache.maven.scm</groupId>
+        <artifactId>maven-scm-provider-gitexe</artifactId>
+        <version>1.6</version>
+      </extension>
+      <extension>
+        <groupId>org.apache.maven.scm</groupId>
+        <artifactId>maven-scm-api</artifactId>
+        <version>1.6</version>
+      </extension>
     </extensions>
 
     <sourceDirectory>${basedir}/ext</sourceDirectory>
 
     <plugins>
+      
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-scm-plugin</artifactId>
+        <version>1.6</version>
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.maven.scm</groupId>
+            <artifactId>maven-scm-provider-gitexe</artifactId>
+            <version>1.6</version>
+          </dependency>
+        </dependencies>
+      </plugin>
       
       <plugin>
         <groupId>org.scala-tools</groupId>
@@ -220,8 +289,8 @@
         <artifactId>maven-scalate-plugin</artifactId>
         <version>1.5.3</version>
         <configuration>
-          <remoteServerId>devisilon</remoteServerId>
-          <remoteServerUrl>dav:http://devisilon/blog</remoteServerUrl>
+          <remoteServerId>iodaeng.github.com</remoteServerId>
+          <remoteServerUrl>scm:git:git://git@github.com/iodaeng/iodaeng.github.com.git</remoteServerUrl>
         </configuration>
         <executions>
           <execution>
@@ -230,6 +299,28 @@
             </goals>
           </execution>
         </executions>
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.maven.wagon</groupId>
+            <artifactId>wagon-scm</artifactId>
+            <version>2.2</version>
+          </dependency>
+          <dependency>
+            <groupId>org.apache.maven.scm</groupId>
+            <artifactId>maven-scm-api</artifactId>
+            <version>1.6</version>
+          </dependency>
+          <dependency>
+            <groupId>org.apache.maven.scm</groupId>
+            <artifactId>maven-scm-provider-gitexe</artifactId>
+            <version>1.6</version>
+          </dependency>
+          <dependency>
+            <groupId>org.apache.maven.scm</groupId>
+            <artifactId>maven-scm-provider-git-commons</artifactId>
+            <version>1.6</version>
+          </dependency>
+        </dependencies>
       </plugin>
 
       <plugin>
